@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+           
+        }
+
+        .container {
+            max-width: 600px;
+            
+            margin: 0 300px;
+            background-color: #decece;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: grid;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        button {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0075A9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Contact Update</h2>
+
+        <form action="/updateContact" method="post">
+            <input type="hidden" id="contact_id" name="id" value="">
+            
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required value="">
+
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required value="">
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" value="">
+
+            <label for="mobile_phone">Mobile Phone:</label>
+            <input type="tel" id="mobile_phone" name="mobile_phone" value="">
+
+            <label for="work_phone">Work Phone:</label>
+            <input type="tel" id="work_phone" name="work_phone" value="">
+
+            <label for="home_phone">Home Phone:</label>
+            <input type="tel" id="home_phone" name="home_phone" value="">
+
+            <label for="address">Permanent Address:</label>
+            <input type="text" id="address" name="address" value="">
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" value="">
+
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" value="">
+
+            <label for="zip_code">ZIP Code:</label>
+            <input type="text" id="zip_code" name="zip_code" value="">
+
+            <input  type="submit" value="Save">
+        </form>
+    </div>
+   
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+
+        fetch(`/getContactDataUsingId/${id}`) // Replace with the correct endpoint
+        .then(response => response.json())
+        .then(data => {
+       
+            document.getElementById('contact_id').value =data[0].id;
+            document.getElementById('first_name').value = data[0].first_name || '';
+            document.getElementById('last_name').value = data[0].last_name || '';
+            document.getElementById('email').value = data[0].email || '';
+            document.getElementById('mobile_phone').value = data[0].mobile_phone || '';
+            document.getElementById('work_phone').value = data[0].work_phone || '';
+            document.getElementById('home_phone').value = data[0].home_phone || '';
+            document.getElementById('address').value = data[0].address || '';
+            document.getElementById('city').value = data[0].city || '';
+            document.getElementById('state').value = data[0].state || '';
+            document.getElementById('zip_code').value = data[0].zip_code || '';
+            
+            
+        })
+        .catch(error => {
+            console.error('Error fetching contact data:', error);
+        });
+    });
+
+
+
+</script>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Management</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact Management</h1>
+
+    <!-- Add New Contact Button -->
+    <!-- <button onclick="window.location.href='/insertContact.html'">Add New Contact</button>
+     -->
+     <!-- <a href="insertContact.html" target="_blank">
+        <button>Add New Contact</button>
+      </a> -->
+      <button id="addContactButton">Add New Contact</button>
+
+    <button id="deleteButton" onclick="deleteContact(this)" style="display: none;">Delete</button>
+    <button id="updateButton" onclick="updateContact(this)" style="display: none;">Update</button>
+
+
+    <!-- Contact List Table -->
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email Address</th>
+            <th>Mobile Phone</th>
+            <th>Work Phone</th>
+            <th>Home Phone</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>ZIP Code</th>
+            <th>Actions</th> <!-- New table header for buttons -->
+            
+        </tr>
+        <tbody id="contactList">
+            <!-- Contact information will be dynamically inserted here -->
+        </tbody>
+    </table>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Make an AJAX request to fetch contact data
+            fetch('/getContactData') // Replace with the correct endpoint
+                .then(response => response.json())
+                .then(data => {
+                    
+                    const contactList = document.getElementById('contactList');
+                    data.forEach(contact => {
+                        // console.log(contact.id);
+                        const row = contactList.insertRow();
+                        const contactData = [
+                            contact.first_name,
+                            contact.last_name,
+                            contact.email,
+                            contact.mobile_phone,
+                            contact.work_phone,
+                            contact.home_phone,
+                            contact.address,
+                            contact.city,
+                            contact.state,
+                            contact.zip_code
+                        ];
+
+                        contactData.forEach(value => {
+                            const cell = row.insertCell();
+                            cell.textContent = value;
+                        });
+
+                        // Add a column with buttons for Update and Delete
+                        const actionCell = row.insertCell();
+                        const updateButton = document.getElementById('updateButton').cloneNode(true);
+                        const deleteButton = document.getElementById('deleteButton').cloneNode(true);
+                        actionCell.appendChild(updateButton);
+                        actionCell.appendChild(deleteButton);
+                        updateButton.style.display = 'block';
+                        deleteButton.style.display = 'block';
+
+                        // Assign data attributes to the buttons for reference
+                        // updateButton.setAttribute('data-first-name', contact.first_name);
+                        // updateButton.setAttribute('data-last-name', contact.last_name);
+                        // Add more attributes for other contact data as needed
+                        updateButton.setAttribute('data-contact-id', contact.id);
+                        deleteButton.setAttribute('data-contact-id', contact.id); // Assuming you have a unique contact ID
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching contact data:', error);
+                });
+        });
+
+        function deleteContact(button) {
+            const contactId = button.getAttribute('data-contact-id');
+            fetch(`/deleteContact/${contactId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    reloadPage();
+                    alert(`Contact with ID ${contactId} has been deleted.`);
+                } else {
+                    alert('Error deleting contact.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while trying to delete the contact.');
+            });
+
+            
+
+        }
+
+        // <button id="updateButton" onclick="updateContact(this)" style="display: none;">Update</button>
+        function updateContact(button){
+            const contactId = button.getAttribute('data-contact-id');
+            window.location.href = 'update.html?id=' + contactId;
+            return;
+        }
+
+
+        document.getElementById('addContactButton').addEventListener('click', function() {
+            window.location.href = '/insertContact.html';
+        });
+
+        function reloadPage() {
+            // Reload the current page
+            location.reload();
+        }
+
+    </script>
+</body>
+</html>
